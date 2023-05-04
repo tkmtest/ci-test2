@@ -1,4 +1,4 @@
-name: First Message tkmyamamoto
+name: First Message tkmtest
 
 on:
   pull_request:
@@ -9,6 +9,9 @@ on:
 
 jobs:
   post-message:
+    permissions:
+      contents: read
+      pull-requests: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
