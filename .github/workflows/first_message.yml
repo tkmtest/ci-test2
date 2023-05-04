@@ -1,4 +1,4 @@
-name: First Message tkmyamamoto
+name: First Message
 
 on:
   pull_request:
