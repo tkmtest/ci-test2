@@ -1,4 +1,4 @@
-name: First Message tkmtest
+name: First Message
 
 on:
   pull_request:
