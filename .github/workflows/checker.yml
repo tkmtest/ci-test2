@@ -29,8 +29,6 @@ jobs:
   linter:
     runs-on: ubuntu-latest
     needs: get-files-changed
-    env:
-      FILES: ${{needs.get-files-changed.outputs.files}}
     steps:
       - uses: actions/checkout@v3
       - run: echo ${{needs.get-files-changed.outputs.files}}
@@ -41,8 +39,6 @@ jobs:
   formatter:
     runs-on: ubuntu-latest
     needs: get-files-changed
-    env:
-      FILES: ${{needs.get-files-changed.outputs.files}}
     steps:
       - uses: actions/checkout@v3
       - name: Install flake8 and its plugins
@@ -53,8 +49,6 @@ jobs:
   isort:
     runs-on: ubuntu-latest
     needs: get-files-changed
-    env:
-      FILES: ${{needs.get-files-changed.outputs.files}}
     steps:
       - uses: actions/checkout@v3
       - uses: isort/isort-action@v1
