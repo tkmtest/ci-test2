@@ -9,8 +9,10 @@ on:
       - master
 
 jobs:
-  checker:
+  get-files-changed:
     runs-on: ubuntu-latest
+    outputs:
+      files: ${{ steps.changed-files-specific.outputs.all_changed_files }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -21,17 +23,37 @@ jobs:
         with:
           files: |
             **/*.py
-      - name: Linter - Run black
-        uses: psf/black@stable
+          
+  linter:
+    runs-on: ubuntu-latest
+    needs: get-files-changed
+    env:
+      FILES: ${{needs.get-files-changed.outputs.files}}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: psf/black@stable
         with:
           options: "--check --diff"
-          src: "${{ steps.changed-files-specific.outputs.all_changed_files }}"
+          src: "$FILES"
+  formatter:
+    runs-on: ubuntu-latest
+    needs: get-files-changed
+    env:
+      FILES: ${{needs.get-files-changed.outputs.files}}
+    steps:
+      - uses: actions/checkout@v3
       - name: Install flake8 and its plugins
         run: pip install flake8 flake8-docstrings
-      - name: Formatter - Run flake8
+      - name: Run flake8
         run: |
-          flake8 ${{ steps.changed-files-specific.outputs.all_changed_files }} --max-line-length=100 --ignore=H102,H103,W503,H238,E203
-      - name: Run isort
-        uses: isort/isort-action@v1
+          flake8 $FILES --max-line-length=100 --ignore=H102,H103,W503,H238,E203
+  isort:
+    runs-on: ubuntu-latest
+    needs: get-files-changed
+    env:
+      FILES: ${{needs.get-files-changed.outputs.files}}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: isort/isort-action@v1
         with:
-          sort-paths: "${{ steps.changed-files-specific.outputs.all_changed_files }}"
+          sort-paths: "$FILES"
