@@ -12,6 +12,10 @@ jobs:
   get-files-changed:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
+
       - run: |
           echo "files<<EOF" >> ${GITHUB_ENV}
           echo "$(gh pr diff --name-only --repo ${{ github.repository }} ${{ github.event.pull_request.number }} | grep .py$ | sed 's/^/.\//' | tr '\n' ' ')" >> ${GITHUB_ENV}
@@ -20,6 +24,7 @@ jobs:
           echo ${{ github.event.pull_request.changed_files }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          
       - name: Get all changed *.py file(s)
         id: changed-files-specific
         uses: tj-actions/changed-files@v35
