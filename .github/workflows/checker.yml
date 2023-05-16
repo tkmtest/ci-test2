@@ -9,6 +9,14 @@ on:
       - master
 
 jobs:
+  get-files-changed:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          files=$(gh pr diff --name-only --repo ${{ github.repository }} ${{ github.event.pull_request.number }} | grep .py$ | sed 's/^/.\//' | tr '\n' ' ')
+          echo "${files}" >> ${GITHUB_ENV}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   linter:
     runs-on: ubuntu-latest
     steps:
@@ -16,7 +24,7 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --diff"
-          src: ./ex2/sub1/main.py ./ex2/sub2/main.py
+          src: "${{ env.files }}"
   formatter:
     runs-on: ubuntu-latest
     steps:
@@ -25,11 +33,11 @@ jobs:
         run: pip install flake8 flake8-docstrings
       - name: Run flake8
         run: |
-          flake8 ./ex2/sub1/main.py ./ex2/sub2/main.py --max-line-length=100 --ignore=H102,H103,W503,H238,E203
+          flake8 ${{ env.files }} --max-line-length=100 --ignore=H102,H103,W503,H238,E203
   isort:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: isort/isort-action@v1
         with:
-          sort-paths: ./ex2/sub1/main.py ./ex2/sub2/main.py
+          sort-paths: "${{ env.files }}"
