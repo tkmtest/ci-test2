@@ -9,7 +9,7 @@ on:
       - master
 
 jobs:
-  linter:
+  checker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -21,42 +21,17 @@ jobs:
         with:
           files: |
             **/*.py
-      - uses: psf/black@stable
+      - name: Linter - Run black
+        uses: psf/black@stable
         with:
           options: "--check --diff"
           src: "${{ steps.changed-files-specific.outputs.all_changed_files }}"
-  formatter:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
-      - name: Get all changed *.py file(s)
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v35
-        with:
-          files: |
-            **/*.py
       - name: Install flake8 and its plugins
         run: pip install flake8 flake8-docstrings
-      - name: Run flake8
+      - name: Formatter - Run flake8
         run: |
-          # for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
-          #   flake8 ${file} --max-line-length=100 --ignore=H102,H103,W503,H238,E203
-          # done
           flake8 ${{ steps.changed-files-specific.outputs.all_changed_files }} --max-line-length=100 --ignore=H102,H103,W503,H238,E203
-  isort:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0  # OR "2" -> To retrieve the preceding commit.
-      - name: Get all changed *.py file(s)
-        id: changed-files-specific
-        uses: tj-actions/changed-files@v35
-        with:
-          files: |
-            **/*.py
-      - uses: isort/isort-action@v1
+      - name: Run isort
+        uses: isort/isort-action@v1
         with:
           sort-paths: "${{ steps.changed-files-specific.outputs.all_changed_files }}"
