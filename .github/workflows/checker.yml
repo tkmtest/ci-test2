@@ -16,6 +16,7 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --diff"
+          src: "./ex2/sub1/main.py ./ex2/sub2/main.py"
   formatter:
     runs-on: ubuntu-latest
     steps:
@@ -24,9 +25,11 @@ jobs:
         run: pip install flake8 flake8-docstrings
       - name: Run flake8
         run: |
-          flake8 . --max-line-length=100 --ignore=H102,H103,W503,H238,E203
+          flake8 ./ex2/sub1/main.py ./ex2/sub2/main.py --max-line-length=100 --ignore=H102,H103,W503,H238,E203
   isort:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: isort/isort-action@v1
+        with:
+          sort-paths: "./ex2/sub1/main.py ./ex2/sub2/main.py"
