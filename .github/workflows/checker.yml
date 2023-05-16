@@ -43,7 +43,10 @@ jobs:
         run: pip install flake8 flake8-docstrings
       - name: Run flake8
         run: |
-          flake8 ${{ steps.changed-files-specific.outputs.all_changed_files }} --max-line-length=100 --ignore=H102,H103,W503,H238,E203
+          for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
+            flake8 ${file} --max-line-length=100 --ignore=H102,H103,W503,H238,E203
+          done
+          # flake8 ${{ steps.changed-files-specific.outputs.all_changed_files }} --max-line-length=100 --ignore=H102,H103,W503,H238,E203
   isort:
     runs-on: ubuntu-latest
     steps:
