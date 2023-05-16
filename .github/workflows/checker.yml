@@ -16,7 +16,7 @@ jobs:
       - uses: psf/black@stable
         with:
           options: "--check --diff"
-          src: "./ex2/sub1/main.py ./ex2/sub2/main.py"
+          src: ./ex2/sub1/main.py ./ex2/sub2/main.py
   formatter:
     runs-on: ubuntu-latest
     steps:
@@ -32,4 +32,4 @@ jobs:
       - uses: actions/checkout@v3
       - uses: isort/isort-action@v1
         with:
-          sort-paths: "./ex2/sub1/main.py ./ex2/sub2/main.py"
+          sort-paths: ./ex2/sub1/main.py ./ex2/sub2/main.py
