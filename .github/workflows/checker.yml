@@ -13,8 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          files="$(gh pr diff --name-only --repo ${{ github.repository }} ${{ github.event.pull_request.number }} | grep .py$ | sed 's/^/.\//' | tr '\n' ' ')"
-          echo "${files}" >> ${GITHUB_ENV}
+          echo "files<<EOF" >> ${GITHUB_ENV}
+          echo "$(gh pr diff --name-only --repo ${{ github.repository }} ${{ github.event.pull_request.number }} | grep .py$ | sed 's/^/.\//' | tr '\n' ' ')" >> ${GITHUB_ENV}
+          echo "EOF" >> ${GITHUB_ENV}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
   linter:
