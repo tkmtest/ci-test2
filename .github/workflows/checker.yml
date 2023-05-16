@@ -20,12 +20,18 @@ jobs:
           echo ${{ github.event.pull_request.changed_files }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      - id: files
-        uses: jitterbit/get-changed-files@v1
-      - run: |
-          for changed_file in ${{ steps.files.outputs.all }}; do
-            echo "Do something with this ${changed_file}."
+      - name: Get all changed *.py file(s)
+        id: changed-files-specific
+        uses: tj-actions/changed-files@v35
+        with:
+          files: |
+            **/*.py
+      - name: List all changed files
+        run: |
+          for file in ${{ steps.changed-files-specific.outputs.all_changed_files }}; do
+            echo "$file was changed"
           done
+          echo "${{ steps.changed-files-specific.outputs.all_changed_files }}"
     
   linter:
     runs-on: ubuntu-latest
